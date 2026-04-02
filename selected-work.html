@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IRIS — CV &amp; Showreel</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── PAGE BACKGROUND ──────────────────────────────────────── */
+    body {
+      background: linear-gradient(160deg,
+        #c8cc7a 0%, #d8db9a 30%, #eaea8a 60%, #fff600 100%);
+      min-height: 100vh;
+    }
+
+    /* ── THREE-COLUMN LAYOUT ──────────────────────────────────── */
+    .site-wrapper {
+      display: grid;
+      grid-template-columns: 25% 1fr 25%;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Vertical border lines */
+    .site-wrapper::before,
+    .site-wrapper::after {
+      content: '';
+      position: fixed;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: rgba(0,0,0,0.13);
+      pointer-events: none;
+      z-index: 10;
+    }
+    .site-wrapper::before { left: 25%; }
+    .site-wrapper::after  { right: 25%; }
+
+    /* ── LEFT COLUMN ──────────────────────────────────────────── */
+    .col-left {
+      padding: 0.7rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .col-left h2 {
+      font-size: clamp(1.6rem, 2.5vw, 3.8rem);
+      font-weight: 440;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .col-left .contact-block {
+      font-size: 0.85rem;
+      line-height: 1.9;
+      color: var(--black);
+      margin-top: 0.5rem;
+    }
+
+    .col-left .contact-block a:hover { opacity: 0.6; }
+
+    .col-left .btn-back {
+      margin-top: auto;
+      margin-bottom: 1rem;
+      max-width: 260px;
+      text-align: center;
+    }
+
+    /* ── MIDDLE COLUMN ────────────────────────────────────────── */
+    .col-middle {
+      padding: 2.5rem 2rem;
+    }
+
+    /* Video embed container */
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #111;
+      margin-bottom: 2.5rem;
+      overflow: hidden;
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+
+    /* Showreel label overlay */
+    .video-label {
+      position: absolute;
+      top: 0.8rem; left: 0.8rem;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .video-label span {
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      padding: 0.25rem 0.6rem;
+    }
+
+    .video-label .tag-ai {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: #fff;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      padding: 0.2rem 0.4rem;
+    }
+
+    /* Highlighted projects */
+    .projects-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .projects-heading {
+      font-size: clamp(1.4rem, 2.5vw, 2.5rem);
+      font-weight: 400;
+      color: rgba(0,0,0,0.40);
+      line-height: 1.15;
+    }
+
+    .projects-list {
+      font-size: 0.85rem;
+      line-height: 1.75;
+      color: var(--black-75);
+    }
+
+    .projects-list .cat {
+      color: var(--black-60);
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.2rem;
+    }
+    .projects-list .cat:first-child { margin-top: 0; }
+
+    /* ── RIGHT COLUMN (CV) ────────────────────────────────────── */
+    .col-right {
+      padding: 2.5rem 1.2rem 2.5rem 1.5rem;
+      background: rgba(205,205,205,0.59);
+      min-height: 100vh;
+    }
+
+    .cv-title {
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      color: var(--black-60);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .cv-row {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 0 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .cv-lbl {
+      font-size: 0.78rem;
+      color: var(--black-60);
+      padding-top: 0.1rem;
+      line-height: 1.6;
+    }
+
+    .cv-val {
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: var(--black);
+    }
+
+    .cv-val b { font-weight: 600; }
+
+    .cv-entry { margin-bottom: 1.1rem; }
+    .cv-year  { color: var(--black-60); font-size: 0.75rem; display: block; margin-top: 0.1rem; margin-bottom: 0.8rem; }
+
+    .cv-skills { list-style: none; font-size: 0.8rem; line-height: 2; color: var(--black-75); }
+
+    .cv-updated { font-size: 0.72rem; color: var(--black-40); text-align: right; margin-top: 2rem; }
+
+    /* ── CLOCK ────────────────────────────────────────────────── */
+    .clock-bar {
+      position: fixed;
+      bottom: 1.2rem;
+      left: 0; right: 0;
+      text-align: center;
+      pointer-events: none;
+      font-size: 0.75rem;
+      color: var(--black-40);
+      z-index: 20;
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .site-wrapper {
+        grid-template-columns: 1fr;
+        display: block;
+      }
+      .site-wrapper::before,
+      .site-wrapper::after { display: none; }
+      .col-left {
+        position: static;
+        height: auto;
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(0,0,0,0.12);
+      }
+      .col-left .btn-back { margin-top: 1.5rem; }
+      .col-right { background: rgba(205,205,205,0.4); }
+      .projects-section { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="site-wrapper">
+
+  <!-- ══ LEFT ════════════════════════════════════════════════ -->
+  <aside class="col-left">
+    <h2>
+      Director /<br>
+      Art Director
+    </h2>
+    <hr>
+    <div class="contact-block">
+      <a href="mailto:iris.peil.iris@gmail.com">iris.peil.iris@gmail.com</a><br>
+      <a href="https://www.instagram.com/iris_peil" target="_blank">Instagram</a>
+      <br><br>
+      <a href="contact.html">CONTACT</a>
+    </div>
+    <hr>
+    <a class="btn-back" href="index.html">Bring me back, I want to choose again</a>
+  </aside>
+
+  <!-- ══ MIDDLE ══════════════════════════════════════════════ -->
+  <main class="col-middle">
+
+    <!-- VIDEO EMBED ─────────────────────────────────────── -->
+    <!-- TO REPLACE: swap YOUR_VIMEO_ID with your actual Vimeo video ID
+         e.g. https://vimeo.com/123456789 → id is 123456789 -->
+    <div class="video-wrap">
+      <div class="video-label">
+        <span>Showreel &nbsp;|&nbsp; 2025</span>
+        <span class="tag-ai">INCLUDES AI</span>
+      </div>
+      <!-- Uncomment and fill in your Vimeo ID when ready: -->
+      <!--
+      <iframe src="https://player.vimeo.com/video/YOUR_VIMEO_ID"
+        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      -->
+      <!-- Placeholder shown until you add your Vimeo ID -->
+      <div class="placeholder" style="height:100%; font-size:0.8rem;">
+        🎬 Vimeo embed<br>
+        <small>Replace YOUR_VIMEO_ID in the HTML</small>
+      </div>
+    </div>
+
+    <!-- HIGHLIGHTED PROJECTS ────────────────────────────── -->
+    <div class="projects-section">
+      <p class="projects-heading">
+        Highlighted<br>
+        projects from<br>
+        23– present →
+      </p>
+      <div class="projects-list">
+        <span class="cat">Films:</span>
+        "Ab Absurdo" (2023)<br>
+        "Mitte näkku ja mitte väga valusalt" (2022)
+
+        <span class="cat">Commercials:</span>
+        Nike Air 2023 (2 separate sets)<br>
+        Nike Summer Sale Campaign 2023 (8 separate sets)<br>
+        KUMU Brand awareness<br>
+        Kadriorg Art Museum<br>
+        Niguliste Museum<br>
+        Mikkeli Museum<br>
+        Adamson Ericu Museum
+
+        <span class="cat">Music Videos:</span>
+        An-Marlen – "Sinust lahti ei saa"
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══ RIGHT (CV) ══════════════════════════════════════════ -->
+  <aside class="col-right">
+    <p class="cv-title">CV</p>
+    <hr>
+
+    <!-- Education -->
+    <div class="cv-row">
+      <span class="cv-lbl">Education</span>
+      <div class="cv-val">
+        <div class="cv-entry">
+          <b>Baltic Film, Media and Arts School //</b><br>
+          BA in Film Directing<br>
+          (extended program of 4 years)
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Employment -->
+    <div class="cv-row">
+      <span class="cv-lbl">Employment</span>
+      <div class="cv-val">
+        <div class="cv-entry">
+          <b>Nike Baltics</b> (Freelancer)<br>
+          Project Manager / Producer / Video Director
+          <span class="cv-year">2023</span>
+        </div>
+        <div class="cv-entry">
+          <b>Film Campaign manager</b> (Freelancer)<br>
+          KP Distributions, Alasti Cinema / Klara Films
+          <span class="cv-year">2020 –</span>
+        </div>
+        <div class="cv-entry">
+          <b>Made in Baltics (Sony Music sub-label)</b><br>
+          Marketing, PR &amp; Communications manager
+          <span class="cv-year">2019 – 2020</span>
+        </div>
+        <div class="cv-entry">
+          <b>Art Director / Costume Designer</b>
+          <span class="cv-year">2016 –</span>
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Detail -->
+    <div class="cv-row">
+      <span class="cv-lbl"></span>
+      <div class="cv-val">
+        <div class="cv-entry">
+          <b>Nike Baltics:</b><br>
+          Visual media producer &amp; director – commercial video- and photoshoots for Nike Baltics (EE, LT, LV)<br><br>
+          Campaigns:<br>
+          Nike Air Max 2023<br>
+          Nike Pegasus<br>
+          Nike Summer Sale
+        </div>
+        <div class="cv-entry">
+          <b>Made In Baltics:</b><br>
+          Artists worked with:<br>
+          Ewert and The Two Dragons, Lenna, Miljardid, Ariadne, Jaagup Tuisk, Frankie Animal and Gram-of-Fun, Chris Noah, Rasmus Rändvee.
+        </div>
+        <div class="cv-entry">
+          <b>Film Marketing manager:</b><br><br>
+          // KP Distribution:<br>
+          "Love Lies Bleeding" (R. Glass)<br>
+          "Crossings" (L. Akin)<br>
+          "My Penguin Friend" (D. Schurmann)<br><br>
+          // Alasti Cinema &amp; Klara Films<br>
+          "Lynxman" (J. Suonpää)<br>
+          "Sundial" (L. Nimik)<br>
+          "A Loss of Something Ever Felt" (C. Lesmes)<br>
+          "The Weight of All The Beauty" (E. Mägi)
+        </div>
+        <div class="cv-entry">
+          <b>Costume &amp; Art Director:</b><br>
+          "Double Turbo" (Eskobros.)<br>
+          "Kalev" (O. Musting)<br>
+          "Se mieletön remppa" (T. Mustonen)<br>
+          "Moskitos and Humans" (M. Ligema)<br>
+          "Meeta" (R. Rummel)<br><br>
+          Some clients include:<br>
+          Tommy Cash, Eesti Lotto, Cartoon, Adidas, Nike, Ariadne, Lenna, Alexela, Maks &amp; Moorits, LHV, Prisma, Omniva, Tele2, TV3, Pakendikeskus, Olympic Committee, Piletilevi, EE Nato… and many others
+        </div>
+        <div style="text-align:right; margin-top:0.5rem;">
+          <a href="https://iris-peil.cargo.site" target="_blank" style="font-size:0.78rem; text-decoration:underline; color:var(--black-60);">→ Styling Portfolio</a>
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Software & Skills -->
+    <div class="cv-row">
+      <span class="cv-lbl"></span>
+      <div class="cv-val">
+        <b>Software and skills</b><br><br>
+        Adobe Creative Cloud →
+        <ul class="cv-skills" style="margin-top:0.3rem;">
+          <li>– Premiere</li>
+          <li>– Photoshop</li>
+          <li>– Illustrator</li>
+          <li>– InDesign</li>
+          <li>– Acrobat</li>
+          <li>– XD</li>
+          <li>– After Effects</li>
+        </ul>
+        <br>
+        <ul class="cv-skills">
+          <li>– Twinmotion</li>
+          <li>– DaVinci Resolve</li>
+          <li>– Figma</li>
+          <li>– Cargo (Web design + basic CSS)</li>
+        </ul>
+        <hr>
+        <ul class="cv-skills">
+          <li>– Campaign management &amp; PR</li>
+          <li>– Marketing / branding</li>
+          <li>– Project management</li>
+          <li>– Art direction</li>
+          <li>– Graphic design</li>
+          <li>– Copywriting</li>
+          <li>– Filming</li>
+          <li>– Video editing</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="cv-updated">Last Updated 25.06.10</p>
+  </aside>
+
+</div><!-- .site-wrapper -->
+
+<!-- Clock -->
+<div class="clock-bar"><span id="clock"></span></div>
+
+<script>
+  function updateClock() {
+    const now = new Date();
+    const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    let h = now.getHours(), m = now.getMinutes();
+    const p = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    m = String(m).padStart(2,'0');
+    document.getElementById('clock').textContent =
+      `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()} ${h}:${m} ${p}`;
+  }
+  updateClock(); setInterval(updateClock, 1000);
+</script>
+
+</body>
+</html>

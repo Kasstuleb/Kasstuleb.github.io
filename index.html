@@ -1,1424 +1,169 @@
 <!DOCTYPE html>
-<html lang="et">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kinnisvara jee — Avatud uuele</title>
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-
-  <!-- GSAP + ScrollTrigger -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-
+  <title>IRIS</title>
+  <link rel="stylesheet" href="style.css"/>
   <style>
-    /* ── RESET ─────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --sand:    #f2ede6;
-      --stone:   #e0d9cf;
-      --moss:    #3d4a38;
-      --moss-lt: #5a6b53;
-      --cream:   #faf8f4;
-      --ink:     #1a1a18;
-      --ink-60:  rgba(26,26,24,0.6);
-      --ink-30:  rgba(26,26,24,0.3);
-      --accent:  #8b7355;
-      --font-display: 'Cormorant Garamond', Georgia, serif;
-      --font-body:    'DM Sans', sans-serif;
-      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    html { font-size: 16px; scroll-behavior: smooth; }
+    /* ── LANDING PAGE SPECIFIC ──────────────────────────────── */
 
     body {
-      font-family: var(--font-body);
-      background: var(--cream);
-      color: var(--ink);
-      overflow-x: hidden;
-      cursor: none;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    img { display: block; width: 100%; }
-
-    /* ── CUSTOM CURSOR ─────────────────────────────────────── */
-    .cursor {
-      position: fixed;
-      width: 10px; height: 10px;
-      background: var(--moss);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width 0.3s var(--ease-out), height 0.3s var(--ease-out), background 0.3s;
-      mix-blend-mode: multiply;
-    }
-    .cursor-ring {
-      position: fixed;
-      width: 36px; height: 36px;
-      border: 1px solid var(--moss);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%, -50%);
-      transition: all 0.12s var(--ease-out);
-      opacity: 0.5;
-    }
-    body:has(a:hover) .cursor,
-    body:has(button:hover) .cursor { width: 20px; height: 20px; background: var(--accent); }
-    body:has(a:hover) .cursor-ring,
-    body:has(button:hover) .cursor-ring { width: 54px; height: 54px; opacity: 0.2; }
-
-    /* ── NAV ────────────────────────────────────────────────── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 1.5rem 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: background 0.4s, padding 0.4s, backdrop-filter 0.4s;
-    }
-    nav.scrolled {
-      background: rgba(242, 237, 230, 0.88);
-      backdrop-filter: blur(12px);
-      padding: 1rem 3rem;
-      border-bottom: 1px solid var(--ink-30);
-    }
-
-    .nav-logo {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      font-weight: 400;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ink);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--ink-60);
-      transition: color 0.2s;
-      position: relative;
-    }
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -2px; left: 0;
-      width: 0; height: 1px;
-      background: var(--moss);
-      transition: width 0.3s var(--ease-out);
-    }
-    .nav-links a:hover { color: var(--ink); }
-    .nav-links a:hover::after { width: 100%; }
-
-    .nav-burger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 4px;
-    }
-    .nav-burger span {
-      display: block;
-      width: 24px; height: 1.5px;
-      background: var(--ink);
-      transition: transform 0.3s, opacity 0.3s;
-    }
-
-    /* Full-screen menu overlay */
-    .menu-overlay {
-      position: fixed;
-      inset: 0;
-      background: var(--moss);
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
-      transform: translateY(-100%);
-      transition: transform 0.6s var(--ease-out);
-    }
-    .menu-overlay.open { transform: translateY(0); }
-    .menu-overlay a {
-      font-family: var(--font-display);
-      font-size: clamp(2.5rem, 6vw, 5rem);
-      color: var(--sand);
-      letter-spacing: 0.05em;
-      font-weight: 300;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.4s, transform 0.4s, color 0.2s;
-    }
-    .menu-overlay.open a {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .menu-overlay.open a:nth-child(1) { transition-delay: 0.1s; }
-    .menu-overlay.open a:nth-child(2) { transition-delay: 0.18s; }
-    .menu-overlay.open a:nth-child(3) { transition-delay: 0.26s; }
-    .menu-overlay.open a:nth-child(4) { transition-delay: 0.34s; }
-    .menu-overlay.open a:nth-child(5) { transition-delay: 0.42s; }
-    .menu-overlay a:hover { color: var(--stone); }
-    .menu-close {
-      position: absolute;
-      top: 1.8rem; right: 3rem;
-      color: var(--sand);
-      font-size: 2rem;
-      cursor: pointer;
-      font-weight: 200;
-      line-height: 1;
-    }
-
-    /* ── HERO ────────────────────────────────────────────────── */
-    .hero {
+      /* Yellow-green gradient background — matches Cargo wallpaper */
+      background: linear-gradient(160deg,
+        #c8cc7a 0%, #d8db9a 30%, #eaea8a 60%, #fff600 100%);
       min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      overflow: hidden;
-      position: relative;
     }
 
-    .hero-left {
-      background: var(--sand);
+    /* Full-viewport centred layout */
+    .landing-page {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
-      padding: 6rem 4rem 5rem;
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero-tag {
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-      opacity: 0;
-    }
-
-    .hero-title {
-      font-family: var(--font-display);
-      font-size: clamp(3rem, 5vw, 5.5rem);
-      font-weight: 300;
-      line-height: 1.05;
-      color: var(--ink);
-      margin-bottom: 2rem;
-      overflow: hidden;
-    }
-
-    .hero-title .line {
-      display: block;
-      transform: translateY(110%);
-    }
-
-    .hero-body {
-      font-size: 0.95rem;
-      line-height: 1.7;
-      color: var(--ink-60);
-      max-width: 380px;
-      margin-bottom: 3rem;
-      opacity: 0;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.8rem;
-      background: var(--moss);
-      color: var(--sand);
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 1rem 2rem;
-      border: none;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      opacity: 0;
-      transition: color 0.3s;
-    }
-    .btn-primary::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--accent);
-      transform: translateX(-101%);
-      transition: transform 0.4s var(--ease-out);
-    }
-    .btn-primary:hover::before { transform: translateX(0); }
-    .btn-primary span { position: relative; z-index: 1; }
-    .btn-arrow { position: relative; z-index: 1; transition: transform 0.3s; }
-    .btn-primary:hover .btn-arrow { transform: translateX(4px); }
-
-    .hero-right {
-      position: relative;
-      overflow: hidden;
-      background: var(--stone);
-    }
-
-    /* Placeholder for hero image/video */
-    .hero-media {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, #c8c0b0 0%, #a89880 100%);
-      transform: scale(1.08);
-      transition: transform 8s ease;
-    }
-    .hero-media.loaded { transform: scale(1); }
-
-    /* Decorative label on hero image */
-    .hero-media-label {
-      position: absolute;
-      bottom: 3rem; left: 2.5rem;
-      z-index: 3;
-      opacity: 0;
-    }
-    .hero-media-label span {
-      display: block;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.7);
-    }
-    .hero-media-label strong {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      font-weight: 300;
-      color: #fff;
-      letter-spacing: 0.05em;
-    }
-
-    /* Scrolling indicator */
-    .scroll-hint {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      opacity: 0;
-      z-index: 5;
-    }
-    .scroll-hint span {
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ink-60);
-    }
-    .scroll-line {
-      width: 1px; height: 40px;
-      background: linear-gradient(to bottom, var(--ink-30), transparent);
-      animation: scrollPulse 2s ease-in-out infinite;
-    }
-    @keyframes scrollPulse {
-      0%, 100% { transform: scaleY(1); opacity: 1; }
-      50%       { transform: scaleY(0.4); opacity: 0.3; }
-    }
-
-    /* ── ABOUT / INTRO TEXT ─────────────────────────────────── */
-    .section-about {
-      padding: 8rem 3rem;
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 4rem;
-      align-items: start;
-      background: var(--cream);
-    }
-
-    .section-label {
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      padding-top: 0.5rem;
-    }
-
-    .about-text {
-      font-family: var(--font-display);
-      font-size: clamp(1.8rem, 3vw, 2.8rem);
-      font-weight: 300;
-      line-height: 1.35;
-      color: var(--ink);
-    }
-
-    .about-text em {
-      font-style: italic;
-      color: var(--accent);
-    }
-
-    /* ── STATS ──────────────────────────────────────────────── */
-    .section-stats {
-      background: var(--moss);
-      padding: 6rem 3rem;
-      overflow: hidden;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
-    }
-
-    .stat-item {
-      padding: 3rem 2.5rem;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat-item::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.03);
-      transform: translateX(-101%);
-      transition: transform 0.5s var(--ease-out);
-    }
-    .stat-item:hover::before { transform: translateX(0); }
-
-    .stat-number {
-      font-family: var(--font-display);
-      font-size: clamp(2.5rem, 4vw, 4rem);
-      font-weight: 300;
-      color: var(--sand);
-      line-height: 1;
-      margin-bottom: 0.8rem;
-    }
-
-    .stat-number .count { display: inline-block; }
-    .stat-number .suffix { font-size: 0.6em; opacity: 0.7; }
-
-    .stat-label {
-      font-size: 0.78rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      line-height: 1.5;
-    }
-
-    /* ── PROJECTS ───────────────────────────────────────────── */
-    .section-projects {
-      padding: 8rem 3rem;
-      background: var(--sand);
-    }
-
-    .section-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 4rem;
-    }
-
-    .section-title {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 300;
-      line-height: 1.1;
-      color: var(--ink);
-    }
-
-    .link-subtle {
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ink-60);
-      border-bottom: 1px solid var(--ink-30);
-      padding-bottom: 2px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .link-subtle:hover { color: var(--moss); border-color: var(--moss); }
-
-    .projects-grid {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      grid-template-rows: auto auto;
-      gap: 2px;
-    }
-
-    .project-card {
-      position: relative;
-      overflow: hidden;
-      background: var(--stone);
-      cursor: pointer;
-    }
-
-    .project-card:first-child {
-      grid-row: span 2;
-    }
-
-    /* Aspect ratios */
-    .project-card:first-child { aspect-ratio: unset; min-height: 600px; }
-    .project-card:not(:first-child) { aspect-ratio: 16/9; }
-
-    .project-thumb {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      position: absolute;
-      inset: 0;
-      transition: transform 0.8s var(--ease-out);
-    }
-
-    /* Placeholder gradient when no image */
-    .project-card:nth-child(1) .project-thumb-placeholder {
-      background: linear-gradient(135deg, #8b9a7a 0%, #5a6b53 100%);
-    }
-    .project-card:nth-child(2) .project-thumb-placeholder {
-      background: linear-gradient(135deg, #b0a898 0%, #8b7355 100%);
-    }
-    .project-card:nth-child(3) .project-thumb-placeholder {
-      background: linear-gradient(135deg, #9aafb8 0%, #6a8a95 100%);
-    }
-
-    .project-thumb-placeholder {
-      position: absolute;
-      inset: 0;
-      transition: transform 0.8s var(--ease-out);
-    }
-
-    .project-card:hover .project-thumb-placeholder,
-    .project-card:hover .project-thumb {
-      transform: scale(1.06);
-    }
-
-    .project-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(26,26,18,0.75) 0%, transparent 50%);
-      opacity: 0;
-      transition: opacity 0.4s;
-    }
-    .project-card:hover .project-overlay { opacity: 1; }
-
-    .project-info {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 2rem;
-      transform: translateY(8px);
-      transition: transform 0.4s var(--ease-out);
-    }
-    .project-card:hover .project-info { transform: translateY(0); }
-
-    .project-name {
-      font-family: var(--font-display);
-      font-size: 1.8rem;
-      font-weight: 300;
-      color: #fff;
-      margin-bottom: 0.8rem;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.4s 0.05s, transform 0.4s 0.05s var(--ease-out);
-    }
-    .project-card:hover .project-name {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .project-links {
-      display: flex;
-      gap: 1rem;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.4s 0.1s, transform 0.4s 0.1s var(--ease-out);
-    }
-    .project-card:hover .project-links {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .project-links a {
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.8);
-      border-bottom: 1px solid rgba(255,255,255,0.3);
-      padding-bottom: 1px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .project-links a:hover { color: #fff; border-color: #fff; }
-
-    /* Video play indicator */
-    .project-play {
-      position: absolute;
-      top: 1.5rem; right: 1.5rem;
-      width: 44px; height: 44px;
-      border: 1px solid rgba(255,255,255,0.5);
-      border-radius: 50%;
-      display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 0;
-      transform: scale(0.8);
-      transition: opacity 0.3s, transform 0.3s var(--ease-out);
-    }
-    .project-play svg { width: 14px; fill: #fff; margin-left: 2px; }
-    .project-card:hover .project-play {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    /* ── REDESIGN BAND ──────────────────────────────────────── */
-    .section-redesign {
-      background: var(--ink);
-      padding: 7rem 3rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6rem;
-      align-items: center;
-    }
-
-    .redesign-left {}
-
-    .redesign-label {
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-    }
-
-    .redesign-title {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 3.5vw, 3.2rem);
-      font-weight: 300;
-      line-height: 1.1;
-      color: var(--sand);
-      margin-bottom: 2rem;
-    }
-
-    .redesign-body {
-      font-size: 0.92rem;
-      line-height: 1.75;
-      color: rgba(242,237,230,0.55);
-      margin-bottom: 2.5rem;
-      max-width: 420px;
-    }
-
-    .btn-outline {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.8rem;
-      border: 1px solid rgba(255,255,255,0.25);
-      color: var(--sand);
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 0.9rem 1.8rem;
-      position: relative;
-      overflow: hidden;
-      transition: color 0.3s;
-    }
-    .btn-outline::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--sand);
-      transform: translateX(-101%);
-      transition: transform 0.4s var(--ease-out);
-    }
-    .btn-outline:hover::before { transform: translateX(0); }
-    .btn-outline:hover { color: var(--ink); }
-    .btn-outline span, .btn-outline svg { position: relative; z-index: 1; }
-
-    .redesign-right {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2px;
-    }
-
-    .redesign-img {
-      aspect-ratio: 3/4;
-      background: var(--stone);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .redesign-img:nth-child(2) {
-      margin-top: 3rem;
-      aspect-ratio: 3/4;
-    }
-
-    .redesign-img-fill {
-      position: absolute;
-      inset: 0;
-      transition: transform 0.8s var(--ease-out);
-    }
-    .redesign-img:nth-child(1) .redesign-img-fill {
-      background: linear-gradient(160deg, #c8bfb0, #a09080);
-    }
-    .redesign-img:nth-child(2) .redesign-img-fill {
-      background: linear-gradient(160deg, #9aad98, #6a8a78);
-    }
-    .redesign-img:hover .redesign-img-fill { transform: scale(1.05); }
-
-    /* ── NEWS ───────────────────────────────────────────────── */
-    .section-news {
-      padding: 8rem 3rem;
-      background: var(--cream);
-    }
-
-    .news-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2px;
-      margin-top: 3rem;
-    }
-
-    .news-card {
-      background: var(--sand);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .news-thumb {
-      aspect-ratio: 16/9;
-      background: var(--stone);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .news-thumb-fill {
-      position: absolute;
-      inset: 0;
-      transition: transform 0.7s var(--ease-out);
-    }
-    .news-card:nth-child(1) .news-thumb-fill {
-      background: linear-gradient(135deg, #b0c4b8, #8aaa98);
-    }
-    .news-card:nth-child(2) .news-thumb-fill {
-      background: linear-gradient(135deg, #c4b8a0, #a8906a);
-    }
-    .news-card:hover .news-thumb-fill { transform: scale(1.04); }
-
-    .news-body {
       padding: 2rem;
-    }
-
-    .news-date {
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      color: var(--ink-60);
-      margin-bottom: 0.8rem;
-    }
-
-    .news-title {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      font-weight: 300;
-      line-height: 1.3;
-      color: var(--ink);
-      margin-bottom: 1.2rem;
-      transition: color 0.2s;
-    }
-    .news-card:hover .news-title { color: var(--moss); }
-
-    .news-read {
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: gap 0.3s;
-    }
-    .news-card:hover .news-read { gap: 0.9rem; }
-
-    /* ── NEWSLETTER ─────────────────────────────────────────── */
-    .section-newsletter {
-      background: var(--stone);
-      padding: 6rem 3rem;
       text-align: center;
+      position: relative;
     }
 
-    .newsletter-title {
-      font-family: var(--font-display);
-      font-size: clamp(1.8rem, 3vw, 2.8rem);
-      font-weight: 300;
-      color: var(--ink);
-      margin-bottom: 2.5rem;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
+    /* ── BIG HEADING ──────────────────────────────────────────── */
+    .landing-heading {
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      line-height: 1;
+      color: var(--black);
+      margin-bottom: 3rem;
     }
 
-    .newsletter-form {
+    /* ── TWO PILL BUTTONS ─────────────────────────────────────── */
+    .button-row {
       display: flex;
-      max-width: 460px;
-      margin: 0 auto;
-      border: 1px solid var(--ink-30);
-      overflow: hidden;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-bottom: 3rem;
     }
 
-    .newsletter-form input {
-      flex: 1;
-      padding: 1rem 1.5rem;
-      font-family: var(--font-body);
-      font-size: 0.88rem;
-      border: none;
-      background: transparent;
-      color: var(--ink);
-      outline: none;
+    /* ── DRAGGABLE ASTERISK IMAGE ─────────────────────────────── */
+    .asterisk-wrap {
+      width: clamp(180px, 30vw, 340px);
+      margin: 1.5rem auto 2rem;
+      user-select: none;
+      cursor: grab;
     }
-    .newsletter-form input::placeholder { color: var(--ink-30); }
-
-    .newsletter-form button {
-      padding: 1rem 1.8rem;
-      background: var(--moss);
-      color: var(--sand);
-      font-family: var(--font-body);
-      font-size: 0.78rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border: none;
-      cursor: pointer;
-      transition: background 0.3s;
+    .asterisk-wrap:active { cursor: grabbing; }
+    .asterisk-wrap img,
+    .asterisk-wrap .placeholder {
+      width: 100%;
+      aspect-ratio: 0.82;
+      object-fit: contain;
     }
-    .newsletter-form button:hover { background: var(--accent); }
+    /* Dragging behaviour via JS below */
+    .asterisk-wrap { position: relative; }
 
-    .newsletter-note {
-      font-size: 0.72rem;
-      color: var(--ink-30);
+    /* ── HINT TEXT ────────────────────────────────────────────── */
+    .hint {
+      font-size: 0.85rem;
+      color: var(--black-60);
+      letter-spacing: 0.04em;
       margin-top: 1rem;
     }
 
-    /* ── FOOTER ─────────────────────────────────────────────── */
-    footer {
-      background: var(--ink);
-      padding: 5rem 3rem 3rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 3rem;
+    /* ── CLOCK (bottom) ───────────────────────────────────────── */
+    .clock-bar {
+      position: fixed;
+      bottom: 1.2rem;
+      left: 0; right: 0;
+      text-align: center;
+      pointer-events: none;
     }
 
-    .footer-logo {
-      font-family: var(--font-display);
-      font-size: 1.3rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--sand);
-      margin-bottom: 1.5rem;
-    }
-
-    .footer-desc {
-      font-size: 0.82rem;
-      line-height: 1.7;
-      color: rgba(242,237,230,0.4);
-      max-width: 260px;
-    }
-
-    .footer-heading {
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(242,237,230,0.35);
-      margin-bottom: 1.5rem;
-    }
-
-    .footer-links {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-    }
-
-    .footer-links a {
-      font-size: 0.85rem;
-      color: rgba(242,237,230,0.6);
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--sand); }
-
-    .footer-contact p {
-      font-size: 0.85rem;
-      color: rgba(242,237,230,0.6);
-      line-height: 2;
-    }
-
-    .footer-bottom {
-      grid-column: span 3;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding-top: 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .footer-copy {
-      font-size: 0.75rem;
-      color: rgba(242,237,230,0.3);
-    }
-
-    .footer-social {
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .footer-social a {
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(242,237,230,0.4);
-      transition: color 0.2s;
-    }
-    .footer-social a:hover { color: var(--sand); }
-
-    /* ── HORIZONTAL MARQUEE ─────────────────────────────────── */
-    .marquee-band {
-      background: var(--moss);
-      padding: 1.2rem 0;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-
-    .marquee-track {
-      display: inline-flex;
-      animation: marquee 22s linear infinite;
-    }
-
-    .marquee-item {
-      font-family: var(--font-display);
-      font-size: 1.1rem;
-      font-weight: 300;
-      font-style: italic;
-      color: rgba(242,237,230,0.5);
-      padding: 0 3rem;
-    }
-
-    .marquee-item strong {
-      font-style: normal;
-      font-weight: 400;
-      color: var(--sand);
-    }
-
-    @keyframes marquee {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* ── INVISIBLE initially (for GSAP) ────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(40px);
-    }
-
-    .reveal-left {
-      opacity: 0;
-      transform: translateX(-40px);
-    }
-
-    .reveal-right {
-      opacity: 0;
-      transform: translateX(40px);
-    }
-
-    /* ── RESPONSIVE ─────────────────────────────────────────── */
-    @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; }
-      .hero-right { min-height: 50vw; }
-      .section-about { grid-template-columns: 1fr; gap: 1.5rem; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .projects-grid { grid-template-columns: 1fr; }
-      .project-card:first-child { min-height: 60vw; }
-      .section-redesign { grid-template-columns: 1fr; gap: 3rem; }
-      .news-grid { grid-template-columns: 1fr; }
-      footer { grid-template-columns: 1fr; }
-      .footer-bottom { grid-column: 1; flex-direction: column; gap: 1rem; }
-      nav { padding: 1.2rem 1.5rem; }
-      nav.scrolled { padding: 0.9rem 1.5rem; }
-      .nav-links { display: none; }
-      .nav-burger { display: flex; }
+    /* ── RESPONSIVE ───────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .button-row { flex-direction: column; align-items: center; }
+      .button-13  { font-size: 1.4rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Cursor -->
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
+  <!-- ══ LANDING PAGE ══════════════════════════════════════════ -->
+  <main class="landing-page">
 
-  <!-- Menu Overlay -->
-  <div class="menu-overlay" id="menuOverlay">
-    <span class="menu-close" id="menuClose">✕</span>
-    <a href="#">Projektid</a>
-    <a href="#">Meeskond</a>
-    <a href="#">Kontakt</a>
-    <a href="#">Meist</a>
-    <a href="#">ReDesign</a>
-  </div>
+    <h1 class="landing-heading">
+      What do you want to know?
+    </h1>
 
-  <!-- Nav -->
-  <nav id="mainNav">
-    <a class="nav-logo" href="#"></a>
-    <ul class="nav-links">
-      <li><a href="#">Projektid</a></li>
-      <li><a href="#">Meeskond</a></li>
-      <li><a href="#">Meist</a></li>
-      <li><a href="#">ReDesign</a></li>
-      <li><a href="#">Kontakt</a></li>
-    </ul>
-    <div class="nav-burger" id="navBurger">
-      <span></span><span></span><span></span>
-    </div>
-  </nav>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-left">
-      <p class="hero-tag">Kinnisvaraarendus — Est. 2013</p>
-      <h1 class="hero-title">
-        <span class="line">Avatud</span>
-        <span class="line">uuele</span>
-      </h1>
-      <p class="hero-body">
-juttjuttjutt      </p>
-      <a href="#" class="btn-primary">
-        <span>Vaata projekte</span>
-        <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    <div class="button-row">
+      <a class="button-13" href="general-ad.html">
+        Art Direction &amp; Project Management
+      </a>
+      <a class="button-13" href="selected-work.html">
+        CV &amp; Showreel
       </a>
     </div>
-    <div class="hero-right">
-      <div class="hero-media" id="heroMedia"></div>
-      <div class="hero-media-label" id="heroLabel">
-        <span>Showreel</span>
-        <strong>2025</strong>
+
+    <!-- Draggable asterisk / star graphic -->
+    <!-- TO REPLACE: swap the placeholder div for:
+         <img src="images/asterisk.png" alt=""> -->
+    <div class="asterisk-wrap" id="dragItem">
+      <div class="placeholder" style="aspect-ratio:0.82; border-radius:4px;">
+        ✳ image<br><small>asterisk.png</small>
       </div>
     </div>
-    <div class="scroll-hint" id="scrollHint">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
 
-  <!-- Marquee -->
-  <div class="marquee-band">
-    <div class="marquee-track">
-      <span class="marquee-item"><strong>Tallinn</strong> — Kinnisvara</span>
-      <span class="marquee-item"><strong>Riia</strong> — Arendus</span>
-      <span class="marquee-item"><strong>10+</strong> Aastat kogemust</span>
-      <span class="marquee-item"><strong>1000+</strong> Valmis kodu</span>
-      <span class="marquee-item"><strong>Nimi</strong> ReDesign</span>
-      <span class="marquee-item"><strong>130 mln</strong> Varade maht</span>
-      <!-- duplicate for seamless loop -->
-      <span class="marquee-item"><strong>Tallinn</strong> — Kinnisvara</span>
-      <span class="marquee-item"><strong>Riia</strong> — Arendus</span>
-      <span class="marquee-item"><strong>10+</strong> Aastat kogemust</span>
-      <span class="marquee-item"><strong>1000+</strong> Valmis kodu</span>
-      <span class="marquee-item"><strong>Nimi</strong> ReDesign</span>
-      <span class="marquee-item"><strong>130 mln</strong> Varade maht</span>
-    </div>
+    <p class="hint">no scrolling here — select an option to continue</p>
+
+  </main>
+
+  <!-- Live clock -->
+  <div class="clock-bar">
+    <span id="clock"></span>
   </div>
 
-  <!-- About -->
-  <section class="section-about">
-    <p class="section-label reveal">Meist</p>
-    <p class="about-text reveal">
-      jutt jutt <em>parima hinna ja kvaliteedi suhtele,</em>jepjep
-    </p>
-  </section>
-
-  <!-- Stats -->
-  <section class="section-stats">
-    <div class="stats-grid">
-      <div class="stat-item reveal">
-        <div class="stat-number"><span class="count" data-target="10">0</span><span class="suffix">+ aastat</span></div>
-        <div class="stat-label">kogemust kinnisvaras</div>
-      </div>
-      <div class="stat-item reveal">
-        <div class="stat-number"><span class="count" data-target="130">0</span><span class="suffix"> mln</span></div>
-        <div class="stat-label">varade maht</div>
-      </div>
-      <div class="stat-item reveal">
-        <div class="stat-number"><span class="count" data-target="73800">0</span><span class="suffix"> m²</span></div>
-        <div class="stat-label">valminud äripinda</div>
-      </div>
-      <div class="stat-item reveal">
-        <div class="stat-number"><span class="count" data-target="1000">0</span><span class="suffix">+</span></div>
-        <div class="stat-label">valmis kodu</div>
-      </div>
-      <div class="stat-item reveal">
-        <div class="stat-number"><span class="count" data-target="3000">0</span><span class="suffix">+</span></div>
-        <div class="stat-label">valmimisel kodu</div>
-      </div>
-      <div class="stat-item reveal">
-        <div class="stat-number"><span class="count" data-target="160000">0</span><span class="suffix"> m²</span></div>
-        <div class="stat-label">äripindu planeerimisel</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Projects -->
-  <section class="section-projects">
-    <div class="section-header">
-      <h2 class="section-title reveal">Meie projektid<br>on sulle avatud</h2>
-      <a href="#" class="link-subtle reveal">Kõik projektid →</a>
-    </div>
-    <div class="projects-grid">
-
-      <!-- Large card -->
-      <div class="project-card reveal">
-        <div class="project-thumb-placeholder"></div>
-        <div class="project-play">
-          <svg viewBox="0 0 10 12"><polygon points="0,0 10,6 0,12"/></svg>
-        </div>
-        <div class="project-overlay"></div>
-        <div class="project-info">
-          <div class="project-name">Hipodroomi</div>
-          <div class="project-links">
-            <a href="#">Loe lähemalt</a>
-            <a href="#">Vaata kodulehte</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Small card 1 -->
-      <div class="project-card reveal">
-        <div class="project-thumb-placeholder"></div>
-        <div class="project-overlay"></div>
-        <div class="project-info">
-          <div class="project-name">Raemõisa</div>
-          <div class="project-links">
-            <a href="#">Loe lähemalt</a>
-            <a href="#">Vaata kodulehte</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Small card 2 -->
-      <div class="project-card reveal">
-        <div class="project-thumb-placeholder"></div>
-        <div class="project-overlay"></div>
-        <div class="project-info">
-          <div class="project-name">Aviaatori Kodud</div>
-          <div class="project-links">
-            <a href="#">Loe lähemalt</a>
-            <a href="#">Vaata kodulehte</a>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ReDesign -->
-  <section class="section-redesign">
-    <div class="redesign-left reveal-left">
-      <p class="redesign-label">ReDesign</p>
-      <h2 class="redesign-title">Nimi<br>ReDesign</h2>
-      <p class="redesign-body">
-        Jutt
-      </p>
-      <a href="#" class="btn-outline">
-        <span>Vaata lähemalt</span>
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
-    </div>
-    <div class="redesign-right reveal-right">
-      <div class="redesign-img"><div class="redesign-img-fill"></div></div>
-      <div class="redesign-img"><div class="redesign-img-fill"></div></div>
-    </div>
-  </section>
-
-  <!-- News -->
-  <section class="section-news">
-    <div class="section-header">
-      <h2 class="section-title reveal">jutt uudised</h2>
-      <a href="#" class="link-subtle reveal">Kõik uudised →</a>
-    </div>
-    <div class="news-grid">
-      <article class="news-card reveal">
-        <div class="news-thumb"><div class="news-thumb-fill"></div></div>
-        <div class="news-body">
-          <p class="news-date">03.01.2026</p>
-          <h3 class="news-title">Algas jutt /h3>
-          <span class="news-read">Loe lähemalt <span>→</span></span>
-        </div>
-      </article>
-      <article class="news-card reveal">
-        <div class="news-thumb"><div class="news-thumb-fill"></div></div>
-        <div class="news-body">
-          <p class="news-date">23.12.2025</p>
-          <h3 class="news-title">mhma</h3>
-          <span class="news-read">Loe lähemalt <span>→</span></span>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- Newsletter -->
-  <section class="section-newsletter">
-    <h2 class="newsletter-title reveal">mm</h2>
-    <form class="newsletter-form reveal" onsubmit="return false;">
-      <input type="email" placeholder="E-posti aadress" />
-      <button type="submit">Liitu</button>
-    </form>
-    <p class="newsletter-note reveal">mma</p>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <div>
-      <div class="footer-logo">mm</div>
-      <p class="footer-desc">mm  OÜ — Kinnisvaraarendus<br>Reg-nr 12809907</p>
-    </div>
-    <div>
-      <p class="footer-heading">Navigatsioon</p>
-      <ul class="footer-links">
-        <li><a href="#">Projektid</a></li>
-        <li><a href="#">Meeskond</a></li>
-        <li><a href="#">ReDesign</a></li>
-        <li><a href="#">Uudised</a></li>
-        <li><a href="#">Meist</a></li>
-        <li><a href="#">Kontakt</a></li>
-      </ul>
-    </div>
-    <div class="footer-contact">
-      <p class="footer-heading">Kontakt</p>
-      <p>
-        <a href="tel:+372000000">+372 6 001 004</a><br>
-        <a href="mailto:mhm@mhm.com">kk</a><br>
-        
-      </p>
-    </div>
-    <div class="footer-bottom">
-      <p class="footer-copy">© 2026 mm Kõik õigused kaitstud.</p>
-      <div class="footer-social">
-        <a href="#">Facebook</a>
-        <a href="#">LinkedIn</a>
-        <a href="#">Instagram</a>
-      </div>
-    </div>
-  </footer>
-
-  <!-- ══ JAVASCRIPT ══════════════════════════════════════════ -->
   <script>
-    gsap.registerPlugin(ScrollTrigger);
-
-    /* ── Cursor ─────────────────────────────────────────────── */
-    const cursor     = document.getElementById('cursor');
-    const cursorRing = document.getElementById('cursorRing');
-    let mx = 0, my = 0, rx = 0, ry = 0;
-
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-
-    (function animCursor() {
-      rx += (mx - rx) * 0.18;
-      ry += (my - ry) * 0.18;
-      cursor.style.left     = mx + 'px';
-      cursor.style.top      = my + 'px';
-      cursorRing.style.left = rx + 'px';
-      cursorRing.style.top  = ry + 'px';
-      requestAnimationFrame(animCursor);
-    })();
-
-    /* ── Sticky nav ─────────────────────────────────────────── */
-    const nav = document.getElementById('mainNav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 60);
-    });
-
-    /* ── Mobile menu ─────────────────────────────────────────── */
-    const burger  = document.getElementById('navBurger');
-    const overlay = document.getElementById('menuOverlay');
-    const closeBtn = document.getElementById('menuClose');
-
-    burger.addEventListener('click', () => overlay.classList.add('open'));
-    closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
-
-    /* ── Hero entrance ──────────────────────────────────────── */
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-    tl.to('.hero-title .line', {
-        y: 0,
-        duration: 1.1,
-        stagger: 0.12,
-        delay: 0.2
-      })
-      .to('.hero-tag', { opacity: 1, duration: 0.7 }, '-=0.6')
-      .to('.hero-body', { opacity: 1, y: 0, duration: 0.7 }, '-=0.5')
-      .to('.btn-primary', { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
-      .to('#heroMedia', { scale: 1, duration: 1.2, ease: 'power2.out' }, 0)
-      .to('#heroLabel', { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
-      .to('#scrollHint', { opacity: 1, duration: 0.6 }, '-=0.2');
-
-    /* ── Generic scroll reveals ─────────────────────────────── */
-    gsap.utils.toArray('.reveal').forEach((el, i) => {
-      gsap.to(el, {
-        opacity: 1,
-        y: 0,
-        duration: 0.85,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 88%',
-          toggleActions: 'play none none none'
-        },
-        delay: (i % 3) * 0.07  // slight stagger in groups
-      });
-    });
-
-    gsap.utils.toArray('.reveal-left').forEach(el => {
-      gsap.to(el, {
-        opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
-      });
-    });
-
-    gsap.utils.toArray('.reveal-right').forEach(el => {
-      gsap.to(el, {
-        opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
-      });
-    });
-
-    /* ── CountUp numbers ────────────────────────────────────── */
-    document.querySelectorAll('.count').forEach(el => {
-      const target = parseInt(el.dataset.target, 10);
-
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 85%',
-        once: true,
-        onEnter: () => {
-          const obj = { val: 0 };
-          gsap.to(obj, {
-            val: target,
-            duration: 2,
-            ease: 'power2.out',
-            onUpdate: () => {
-              // Format with thousands separator
-              el.textContent = Math.round(obj.val).toLocaleString('et-EE');
-            }
-          });
-        }
-      });
-    });
-
-    /* ── Parallax hero image ────────────────────────────────── */
-    gsap.to('#heroMedia', {
-      yPercent: 18,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '.hero',
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true
-      }
-    });
-
-    /* ── Section title split-line reveal ───────────────────── */
-    gsap.utils.toArray('.section-title').forEach(el => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0, duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
-        }
-      );
-    });
-
-    /* ── About text word-by-word subtle shimmer ─────────────── */
-    const aboutText = document.querySelector('.about-text');
-    if (aboutText) {
-      gsap.fromTo(aboutText,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1, y: 0, duration: 1.1, ease: 'power3.out',
-          scrollTrigger: { trigger: aboutText, start: 'top 85%', toggleActions: 'play none none none' }
-        }
-      );
+    /* ── Live clock ─────────────────────────────────────────── */
+    function updateClock() {
+      const now = new Date();
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const months = ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December'];
+      let h = now.getHours(), m = now.getMinutes();
+      const period = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      m = String(m).padStart(2, '0');
+      document.getElementById('clock').textContent =
+        `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()} ${h}:${m} ${period}`;
     }
+    updateClock();
+    setInterval(updateClock, 1000);
 
-    /* ── Stats stagger ──────────────────────────────────────── */
-    gsap.utils.toArray('.stat-item').forEach((el, i) => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: i * 0.08,
-          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
-        }
-      );
+    /* ── Draggable asterisk ─────────────────────────────────── */
+    const drag = document.getElementById('dragItem');
+    let isDragging = false, startX, startY, origX, origY;
+
+    drag.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX = e.clientX; startY = e.clientY;
+      const r = drag.getBoundingClientRect();
+      origX = r.left; origY = r.top;
+      drag.style.position = 'fixed';
+      drag.style.left = origX + 'px';
+      drag.style.top  = origY + 'px';
+      drag.style.margin = '0';
+      drag.style.zIndex = '999';
     });
 
-    /* ── Project cards stagger ──────────────────────────────── */
-    gsap.utils.toArray('.project-card').forEach((el, i) => {
-      gsap.fromTo(el,
-        { opacity: 0, scale: 0.97 },
-        {
-          opacity: 1, scale: 1, duration: 0.9, ease: 'power3.out', delay: i * 0.1,
-          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
-        }
-      );
+    document.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      drag.style.left = (origX + e.clientX - startX) + 'px';
+      drag.style.top  = (origY + e.clientY - startY) + 'px';
     });
 
-    /* ── Horizontal line wipe (decorative hr elements) ─────── */
-    gsap.utils.toArray('hr').forEach(el => {
-      gsap.fromTo(el,
-        { scaleX: 0, transformOrigin: 'left' },
-        {
-          scaleX: 1, duration: 0.8, ease: 'power2.inOut',
-          scrollTrigger: { trigger: el, start: 'top 92%', toggleActions: 'play none none none' }
-        }
-      );
-    });
-
+    document.addEventListener('mouseup', () => { isDragging = false; });
   </script>
 
-<!--
-╔══════════════════════════════════════════════════════════════════╗
-║  WORDPRESS INTEGRATION NOTES                                     ║
-╠══════════════════════════════════════════════════════════════════╣
-║                                                                  ║
-║  1. GSAP is loaded from cdnjs — no npm needed.                   ║
-║     Or enqueue via functions.php:                                ║
-║     wp_enqueue_script('gsap', 'https://cdnjs.cloudflare.com/    ║
-║       ajax/libs/gsap/3.12.5/gsap.min.js', [], null, true);      ║
-║     wp_enqueue_script('gsap-st', '...ScrollTrigger.min.js'...); ║
-║                                                                  ║
-║  2. IMAGES: Replace .project-thumb-placeholder divs with        ║
-║     actual <img> tags or wp_get_attachment_image() calls.        ║
-║                                                                  ║
-║  3. VIDEO on hover: Replace placeholder divs with:              ║
-║     <video muted loop playsinline                                ║
-║       onmouseenter="this.play()"                                 ║
-║       onmouseleave="this.pause()">                               ║
-║       <source src="your-video.mp4" type="video/mp4">            ║
-║     </video>                                                     ║
-║                                                                  ║
-║  4. PAGE TEMPLATE: Add to top of .php file:                      ║
-║     <?php /* Template Name: Rterra Home */ ?>                   ║
-║     <?php get_header(); ?>                                       ║
-║        ... body content ...                                      ║
-║     <?php get_footer(); ?>                                       ║
-║                                                                  ║
-║  5. CUSTOM CURSOR: Hides on touch devices automatically          ║
-║     via pointer:none on body. Add media query if needed.         ║
-║                                                                  ║
-║  6. COUNTUP: data-target="" values on .count spans control       ║
-║     the animated numbers. Edit directly in HTML or via ACF.      ║
-╚══════════════════════════════════════════════════════════════════╝
--->
 </body>
 </html>
