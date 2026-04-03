@@ -427,8 +427,7 @@
 
 <!-- ══ NAV ════════════════════════════════════════════════════ -->
 <nav id="mainNav">
-  <a class="nav-logo" href="#">Kass Tuleb</a>
-  <ul class="nav-links">
+<a class="nav-logo" href="#" id="resetHome">Kass Tuleb</a>  <ul class="nav-links">
     <li><a href="#">Lorem</a></li>
     <li><a href="#">Ipsum</a></li>
     <li><a href="#">Dolor</a></li>
@@ -699,7 +698,46 @@ enterBtn.addEventListener('click', e => {
 
 // ── TRIGGER: click anywhere on mosaic to part it ─────────────
 stage.addEventListener('click', partTheMosaic);
+function resetToIntro() {
+  const castleLayer = document.getElementById('castleLayer');
+  const allTiles = document.querySelectorAll('.tile');
+document.getElementById('resetHome').addEventListener('click', (e) => {
+  e.preventDefault();
 
+  if (sitMain.classList.contains('unlocked') || parted) {
+    resetToIntro();
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+  // stop page jump
+  window.scrollTo(0, 0);
+
+  // show intro layers again
+  castleLayer.style.display = 'flex';
+  castleLayer.style.opacity = '1';
+  stage.style.display = 'block';
+  stage.classList.add('active');
+  stage.style.pointerEvents = 'all';
+
+  // hide castle reveal state
+  castleImg.classList.remove('visible');
+  tagline.classList.remove('visible');
+  enterWrap.classList.remove('visible');
+
+  // hide unlocked site
+  sitMain.classList.remove('unlocked');
+
+  // reset flags
+  parted = false;
+  animating = true;
+
+  // rebuild the mosaic completely
+  init();
+
+  // restart animation loop
+  requestAnimationFrame(animate);
+}
 // ── Also trigger after a short idle (optional — remove if you
 //    want click-only). Uncomment the line below to auto-reveal:
 // setTimeout(partTheMosaic, 3500);
