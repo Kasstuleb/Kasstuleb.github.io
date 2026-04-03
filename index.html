@@ -8,28 +8,27 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --pink:       #ff79b0;   /* castle window pink — site bg */
-      --pink-deep:  #e0437a;   /* darker accent */
-      --orange:     #ff5c00;   /* castle orange */
-      --black:      #0d0008;
-      --white:      #fff8f5;
-
-      /* tile colours — from both swatches */
+      --pink: #ff79b0;
+      --pink-deep: #e0437a;
+      --orange: #ff5c00;
+      --black: #0d0008;
+      --white: #fff8f5;
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     html, body {
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
       background: var(--pink);
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       cursor: none;
     }
 
-    /* ─── CUSTOM CURSOR (from index.html) ─────────────────────── */
     .cursor {
       position: fixed;
-      width: 10px; height: 10px;
+      width: 10px;
+      height: 10px;
       background: var(--black);
       border-radius: 50%;
       pointer-events: none;
@@ -38,9 +37,11 @@
       transition: width 0.3s var(--ease), height 0.3s var(--ease), background 0.3s;
       mix-blend-mode: multiply;
     }
+
     .cursor-ring {
       position: fixed;
-      width: 36px; height: 36px;
+      width: 36px;
+      height: 36px;
       border: 1.5px solid var(--black);
       border-radius: 50%;
       pointer-events: none;
@@ -49,15 +50,27 @@
       transition: all 0.12s var(--ease);
       opacity: 0.45;
     }
-    body:has(a:hover) .cursor,
-    body:has(button:hover) .cursor  { width: 22px; height: 22px; background: var(--orange); }
-    body:has(a:hover) .cursor-ring,
-    body:has(button:hover) .cursor-ring { width: 56px; height: 56px; opacity: 0.18; border-color: var(--orange); }
 
-    /* ─── NAV ─────────────────────────────────────────────────── */
+    body:has(a:hover) .cursor,
+    body:has(button:hover) .cursor {
+      width: 22px;
+      height: 22px;
+      background: var(--orange);
+    }
+
+    body:has(a:hover) .cursor-ring,
+    body:has(button:hover) .cursor-ring {
+      width: 56px;
+      height: 56px;
+      opacity: 0.18;
+      border-color: var(--orange);
+    }
+
     nav {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 500;
       height: 58px;
       display: flex;
@@ -78,9 +91,11 @@
     }
 
     .nav-links {
-      display: flex; gap: 2.2rem;
+      display: flex;
+      gap: 2.2rem;
       list-style: none;
     }
+
     .nav-links a {
       font-size: 0.7rem;
       font-weight: 600;
@@ -92,25 +107,28 @@
       transition: opacity 0.2s;
       position: relative;
     }
+
     .nav-links a::after {
       content: '';
       position: absolute;
-      bottom: -2px; left: 0; right: 0;
+      bottom: -2px;
+      left: 0;
+      right: 0;
       height: 1px;
       background: var(--black);
       transform: scaleX(0);
       transition: transform 0.25s var(--ease);
     }
+
     .nav-links a:hover { opacity: 1; }
     .nav-links a:hover::after { transform: scaleX(1); }
 
-    /* ─── MOSAIC GRID — covers everything ─────────────────────── */
     .mosaic-stage {
       position: fixed;
       inset: 0;
       z-index: 10;
       overflow: hidden;
-      pointer-events: none; /* let clicks through once parting */
+      pointer-events: none;
     }
 
     .mosaic-stage.active { pointer-events: all; }
@@ -139,10 +157,6 @@
       transition: transform 1.2s var(--ease), opacity 0.8s ease;
     }
 
-    .tile.parting {
-      /* JS sets individual translate & opacity per tile */
-    }
-
     .tile-letter {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-weight: 900;
@@ -153,52 +167,99 @@
       position: absolute;
     }
 
-    .shape { position: absolute; background: var(--black); }
+    .shape {
+      position: absolute;
+      background: var(--black);
+    }
 
-    /* Shape library */
-    .s-circle  { border-radius: 50%;
-      width: calc(var(--ts)*0.72); height: calc(var(--ts)*0.72); }
+    .s-circle {
+      border-radius: 50%;
+      width: calc(var(--ts) * 0.72);
+      height: calc(var(--ts) * 0.72);
+    }
+
     .s-circle-o {
-      border-radius: 50%; background: transparent !important;
-      border: calc(var(--ts)*0.1) solid var(--black);
-      width: calc(var(--ts)*0.68); height: calc(var(--ts)*0.68); }
-    .s-hex {
-      width: calc(var(--ts)*0.7); height: calc(var(--ts)*0.7);
-      clip-path: polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%); }
-    .s-tri {
-      width: 0; height: 0; background: transparent !important;
-      border-left: calc(var(--ts)*0.36) solid transparent;
-      border-right: calc(var(--ts)*0.36) solid transparent;
-      border-bottom: calc(var(--ts)*0.6) solid var(--black); }
-    .s-dash {
-      width: calc(var(--ts)*0.58); height: calc(var(--ts)*0.11); border-radius: 2px; }
-    .s-rect {
-      width: calc(var(--ts)*0.44); height: calc(var(--ts)*0.66); }
-    .s-grid {
-      width: calc(var(--ts)*0.66); height: calc(var(--ts)*0.66);
+      border-radius: 50%;
       background: transparent !important;
-      display: grid; grid-template-columns: repeat(3,1fr);
-      gap: calc(var(--ts)*0.055); }
-    .s-grid span { background: var(--black); border-radius: 2px; }
-    .s-bars {
-      width: calc(var(--ts)*0.58); height: calc(var(--ts)*0.66);
-      background: transparent !important;
-      display: flex; gap: calc(var(--ts)*0.08); }
-    .s-bars span { flex:1; background: var(--black); }
-    .s-bookmark {
-      width: calc(var(--ts)*0.44); height: calc(var(--ts)*0.66);
-      clip-path: polygon(0 0,100% 0,100% 100%,50% 77%,0 100%); }
-    .s-arrow {
-      width: 0; height: 0; background: transparent !important;
-      border-top: calc(var(--ts)*0.3) solid transparent;
-      border-bottom: calc(var(--ts)*0.3) solid transparent;
-      border-left: calc(var(--ts)*0.48) solid var(--black); }
-    .s-diamond {
-      width: calc(var(--ts)*0.6); height: calc(var(--ts)*0.6);
-      clip-path: polygon(50% 0%,100% 50%,50% 100%,0% 50%); }
+      border: calc(var(--ts) * 0.1) solid var(--black);
+      width: calc(var(--ts) * 0.68);
+      height: calc(var(--ts) * 0.68);
+    }
 
-    /* ─── CASTLE REVEAL LAYER ─────────────────────────────────── */
-    /* Sits behind the mosaic, in front of plain pink bg */
+    .s-hex {
+      width: calc(var(--ts) * 0.7);
+      height: calc(var(--ts) * 0.7);
+      clip-path: polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);
+    }
+
+    .s-tri {
+      width: 0;
+      height: 0;
+      background: transparent !important;
+      border-left: calc(var(--ts) * 0.36) solid transparent;
+      border-right: calc(var(--ts) * 0.36) solid transparent;
+      border-bottom: calc(var(--ts) * 0.6) solid var(--black);
+    }
+
+    .s-dash {
+      width: calc(var(--ts) * 0.58);
+      height: calc(var(--ts) * 0.11);
+      border-radius: 2px;
+    }
+
+    .s-rect {
+      width: calc(var(--ts) * 0.44);
+      height: calc(var(--ts) * 0.66);
+    }
+
+    .s-grid {
+      width: calc(var(--ts) * 0.66);
+      height: calc(var(--ts) * 0.66);
+      background: transparent !important;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: calc(var(--ts) * 0.055);
+    }
+
+    .s-grid span {
+      background: var(--black);
+      border-radius: 2px;
+    }
+
+    .s-bars {
+      width: calc(var(--ts) * 0.58);
+      height: calc(var(--ts) * 0.66);
+      background: transparent !important;
+      display: flex;
+      gap: calc(var(--ts) * 0.08);
+    }
+
+    .s-bars span {
+      flex: 1;
+      background: var(--black);
+    }
+
+    .s-bookmark {
+      width: calc(var(--ts) * 0.44);
+      height: calc(var(--ts) * 0.66);
+      clip-path: polygon(0 0,100% 0,100% 100%,50% 77%,0 100%);
+    }
+
+    .s-arrow {
+      width: 0;
+      height: 0;
+      background: transparent !important;
+      border-top: calc(var(--ts) * 0.3) solid transparent;
+      border-bottom: calc(var(--ts) * 0.3) solid transparent;
+      border-left: calc(var(--ts) * 0.48) solid var(--black);
+    }
+
+    .s-diamond {
+      width: calc(var(--ts) * 0.6);
+      height: calc(var(--ts) * 0.6);
+      clip-path: polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+    }
+
     .castle-layer {
       position: fixed;
       inset: 0;
@@ -224,7 +285,6 @@
       transform: scale(1) translateY(0);
     }
 
-    /* Tagline under castle */
     .castle-tagline {
       margin-top: 2rem;
       font-size: clamp(0.75rem, 1.5vw, 1rem);
@@ -242,7 +302,6 @@
       transform: translateY(0);
     }
 
-    /* ENTER button — the castle door */
     .castle-enter {
       margin-top: 2.5rem;
       position: relative;
@@ -287,12 +346,22 @@
       transform: translateX(-101%);
       transition: transform 0.4s var(--ease);
     }
+
     .enter-btn:hover::before { transform: translateX(0); }
-    .enter-btn span { position: relative; z-index: 1; }
-    .enter-btn .arrow { transition: transform 0.3s; position: relative; z-index: 1; }
+
+    .enter-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .enter-btn .arrow {
+      transition: transform 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
     .enter-btn:hover .arrow { transform: translateX(5px); }
 
-    /* ─── MAIN SITE (hidden behind mosaic) ────────────────────── */
     .site-main {
       position: relative;
       z-index: 1;
@@ -309,7 +378,6 @@
       pointer-events: all;
     }
 
-    /* ─── INNER PAGE CONTENT ───────────────────────────────────── */
     .page-hero {
       min-height: 100vh;
       display: flex;
@@ -363,6 +431,9 @@
       grid-template-columns: repeat(3,1fr);
       gap: 2px;
       margin-top: 2rem;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .col-card {
@@ -391,17 +462,34 @@
       color: rgba(255,121,176,0.6);
     }
 
-    /* ─── SCROLL HINT ─────────────────────────────────────────── */
     .scroll-hint {
-      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-      opacity: 0.4; margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.4;
+      margin-top: 1rem;
     }
-    .scroll-hint span { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--black); }
-    .scroll-line { width: 1px; height: 36px; background: linear-gradient(to bottom, var(--black), transparent);
-      animation: pulse 2s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scaleY(1)} 50%{opacity:0.3;transform:scaleY(0.4)} }
 
-    /* ─── FOOTER ──────────────────────────────────────────────── */
+    .scroll-hint span {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 36px;
+      background: linear-gradient(to bottom, var(--black), transparent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: 0.3; transform: scaleY(0.4); }
+    }
+
     footer {
       background: var(--black);
       padding: 4rem 3rem;
@@ -409,10 +497,21 @@
       justify-content: space-between;
       align-items: center;
     }
-    footer .f-logo { font-weight: 900; font-size: 1rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--pink); }
-    footer p { font-size: 0.75rem; color: rgba(255,121,176,0.35); letter-spacing: 0.08em; }
 
-    /* ─── RESPONSIVE ──────────────────────────────────────────── */
+    footer .f-logo {
+      font-weight: 900;
+      font-size: 1rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--pink);
+    }
+
+    footer p {
+      font-size: 0.75rem;
+      color: rgba(255,121,176,0.35);
+      letter-spacing: 0.08em;
+    }
+
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .three-col { grid-template-columns: 1fr; }
@@ -421,13 +520,12 @@
 </head>
 <body>
 
-<!-- Cursor -->
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- ══ NAV ════════════════════════════════════════════════════ -->
 <nav id="mainNav">
-<a class="nav-logo" href="#" id="resetHome">Kass Tuleb</a>  <ul class="nav-links">
+  <a class="nav-logo" href="#" id="resetHome">Kass Tuleb</a>
+  <ul class="nav-links">
     <li><a href="#">Lorem</a></li>
     <li><a href="#">Ipsum</a></li>
     <li><a href="#">Dolor</a></li>
@@ -435,19 +533,8 @@
   </ul>
 </nav>
 
-<!-- ══ CASTLE LAYER (revealed as tiles part) ══════════════════ -->
 <div class="castle-layer" id="castleLayer">
-  <!--
-    TO REPLACE: swap the src below with the path to your Mu_loss.png
-    e.g. src="images/Mu_loss.png"
-    The image must be in the same folder as this HTML file.
-  -->
-  <img
-    class="castle-img"
-    id="castleImg"
-    src="Mu_loss.png"
-    alt="Kass Tuleb Castle"
-  />
+  <img class="castle-img" id="castleImg" src="mu-loss.png" alt="Kass Tuleb Castle" />
   <p class="castle-tagline" id="castleTagline">Lorem ipsum dolor sit amet</p>
   <div class="castle-enter" id="castleEnter">
     <a class="enter-btn" href="#site" id="enterBtn">
@@ -457,12 +544,10 @@
   </div>
 </div>
 
-<!-- ══ MOSAIC GRID (the animated tile cover) ════════════════════ -->
 <div class="mosaic-stage active" id="mosaicStage">
   <div class="v-belt" id="vbelt"></div>
 </div>
 
-<!-- ══ MAIN SITE CONTENT ════════════════════════════════════════ -->
 <div class="site-main" id="sitMain">
   <div class="page-hero">
     <h1>Kass<br>Tuleb</h1>
@@ -482,7 +567,7 @@
     <p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
   </section>
 
-  <div class="three-col" style="max-width:1100px; margin:0 auto;">
+  <div class="three-col">
     <div class="col-card">
       <h3>Lorem</h3>
       <p>Ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod.</p>
@@ -508,35 +593,39 @@
   </footer>
 </div>
 
-<!-- ══ JAVASCRIPT ════════════════════════════════════════════════ -->
 <script>
-// ── CURSOR ───────────────────────────────────────────────────
 const cursor = document.getElementById('cursor');
-const ring   = document.getElementById('cursorRing');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
-(function animCursor(){
-  rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
-  cursor.style.left = mx+'px'; cursor.style.top = my+'px';
-  ring.style.left   = rx+'px'; ring.style.top  = ry+'px';
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX;
+  my = e.clientY;
+});
+
+(function animCursor() {
+  rx += (mx - rx) * 0.18;
+  ry += (my - ry) * 0.18;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
   requestAnimationFrame(animCursor);
 })();
 
-// ── TILE CONFIG ──────────────────────────────────────────────
 const WORD = ['K','A','S','S',' ','T','U','L','E','B'];
 
-// Palette — castle colours + the swatch colours
 const PALETTES = [
-  ['#ff79b0','#ff5c00'],   // pink + orange (castle colours)
-  ['#0d0008','#ff79b0'],   // black + pink
-  ['#ff5c00','#0d0008'],   // orange + black
-  ['#0a0520','#b8205a'],   // navy + magenta
-  ['#ff5e8a','#ffaab8'],   // hot pink + blush
-  ['#8aad8a','#8a7000'],   // sage + olive
-  ['#5a4800','#6ef0e0'],   // dark gold + aqua
-  ['#ff7849','#0a0520'],   // coral + navy
-  ['#b8205a','#ff7849'],   // magenta + coral
-  ['#111111','#ff79b0'],   // black + pink
+  ['#ff79b0','#ff5c00'],
+  ['#0d0008','#ff79b0'],
+  ['#ff5c00','#0d0008'],
+  ['#0a0520','#b8205a'],
+  ['#ff5e8a','#ffaab8'],
+  ['#8aad8a','#8a7000'],
+  ['#5a4800','#6ef0e0'],
+  ['#ff7849','#0a0520'],
+  ['#b8205a','#ff7849'],
+  ['#111111','#ff79b0'],
 ];
 
 const ALL_COLS = [
@@ -551,187 +640,222 @@ const GAP = 4;
 const SHAPES = ['circle','circle-o','hex','tri','dash','rect','grid','bars','bookmark','arrow','diamond'];
 
 function tileSize() {
-  return Math.round(Math.min(window.innerWidth/7.5, (window.innerHeight)/5));
+  return Math.round(Math.min(window.innerWidth / 7.5, window.innerHeight / 5));
 }
 
-let TS, rows=[], vY=0, rowHeight, totalVH;
+let TS, rows = [], vY = 0, rowHeight, totalVH;
 const vbelt = document.getElementById('vbelt');
 
-// ── MAKE SHAPE ───────────────────────────────────────────────
 function makeShape(type) {
-  if (type==='grid') { const d=document.createElement('div'); d.className='shape s-grid'; for(let i=0;i<9;i++) d.appendChild(document.createElement('span')); return d; }
-  if (type==='bars') { const d=document.createElement('div'); d.className='shape s-bars'; for(let i=0;i<2;i++) d.appendChild(document.createElement('span')); return d; }
-  const d=document.createElement('div'); d.className=`shape s-${type}`; return d;
+  if (type === 'grid') {
+    const d = document.createElement('div');
+    d.className = 'shape s-grid';
+    for (let i = 0; i < 9; i++) d.appendChild(document.createElement('span'));
+    return d;
+  }
+  if (type === 'bars') {
+    const d = document.createElement('div');
+    d.className = 'shape s-bars';
+    for (let i = 0; i < 2; i++) d.appendChild(document.createElement('span'));
+    return d;
+  }
+  const d = document.createElement('div');
+  d.className = `shape s-${type}`;
+  return d;
 }
 
-// ── MAKE LETTER ──────────────────────────────────────────────
 function makeLetter(char) {
-  const s=document.createElement('div'); s.className='tile-letter'; s.textContent=char;
-  const ox=(Math.random()-0.5)*TS*0.14, oy=(Math.random()-0.5)*TS*0.16;
-  s.style.transform=`translate(${ox}px,${oy}px)`;
+  const s = document.createElement('div');
+  s.className = 'tile-letter';
+  s.textContent = char;
+  const ox = (Math.random() - 0.5) * TS * 0.14;
+  const oy = (Math.random() - 0.5) * TS * 0.16;
+  s.style.transform = `translate(${ox}px,${oy}px)`;
   return s;
 }
 
-// ── BUILD ROW ────────────────────────────────────────────────
 function buildRow(rIdx) {
   const palette = PALETTES[rIdx % PALETTES.length];
-  const colsNeeded = Math.ceil(window.innerWidth/(TS+GAP))+4;
-  const totalCols  = colsNeeded*2;
-  const step = Math.floor(totalCols/WORD.length);
+  const colsNeeded = Math.ceil(window.innerWidth / (TS + GAP)) + 4;
+  const totalCols = colsNeeded * 2;
+  const step = Math.floor(totalCols / WORD.length);
   const offset = rIdx % step;
-  const lMap={};
-  for(let i=0;i<WORD.length;i++) lMap[(offset+i*step)%totalCols]=WORD[i];
+  const lMap = {};
 
-  const row=document.createElement('div'); row.className='h-row';
-  row.style.setProperty('--ts', TS+'px');
+  for (let i = 0; i < WORD.length; i++) {
+    lMap[(offset + i * step) % totalCols] = WORD[i];
+  }
 
-  for(let c=0;c<totalCols;c++){
-    const tile=document.createElement('div'); tile.className='tile';
-    tile.style.width=tile.style.height=TS+'px';
-    const roll=Math.random();
-    tile.style.background = roll<0.55 ? palette[c%2] : roll<0.8 ? palette[(c+1)%2] : ALL_COLS[Math.floor(Math.random()*ALL_COLS.length)];
-    if(lMap[c]&&lMap[c]!==' ') tile.appendChild(makeLetter(lMap[c]));
-    else tile.appendChild(makeShape(SHAPES[Math.floor(Math.random()*SHAPES.length)]));
+  const row = document.createElement('div');
+  row.className = 'h-row';
+  row.style.setProperty('--ts', TS + 'px');
+
+  for (let c = 0; c < totalCols; c++) {
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    tile.style.width = TS + 'px';
+    tile.style.height = TS + 'px';
+
+    const roll = Math.random();
+    tile.style.background =
+      roll < 0.55 ? palette[c % 2] :
+      roll < 0.8 ? palette[(c + 1) % 2] :
+      ALL_COLS[Math.floor(Math.random() * ALL_COLS.length)];
+
+    if (lMap[c] && lMap[c] !== ' ') {
+      tile.appendChild(makeLetter(lMap[c]));
+    } else {
+      tile.appendChild(makeShape(SHAPES[Math.floor(Math.random() * SHAPES.length)]));
+    }
+
     row.appendChild(tile);
   }
+
   return row;
 }
 
-// ── INIT GRID ────────────────────────────────────────────────
 function init() {
-  vbelt.innerHTML=''; rows=[];
-  TS=tileSize(); rowHeight=TS+GAP;
-  const stageH=window.innerHeight, rowsVis=Math.ceil(stageH/rowHeight)+1;
-  const totalRows=rowsVis*2;
-  totalVH=rowsVis*rowHeight;
-  for(let r=0;r<totalRows;r++){
-    const el=buildRow(r);
-    const speed=ROW_SPEEDS[r%ROW_SPEEDS.length];
-    const totalW=(Math.ceil(window.innerWidth/(TS+GAP))+4)*2*(TS+GAP);
-    vbelt.appendChild(el); rows.push({el,x:0,speed,totalW});
+  vbelt.innerHTML = '';
+  rows = [];
+  TS = tileSize();
+  rowHeight = TS + GAP;
+
+  const stageH = window.innerHeight;
+  const rowsVis = Math.ceil(stageH / rowHeight) + 1;
+  const totalRows = rowsVis * 2;
+  totalVH = rowsVis * rowHeight;
+
+  for (let r = 0; r < totalRows; r++) {
+    const el = buildRow(r);
+    const speed = ROW_SPEEDS[r % ROW_SPEEDS.length];
+    const totalW = (Math.ceil(window.innerWidth / (TS + GAP)) + 4) * 2 * (TS + GAP);
+    vbelt.appendChild(el);
+    rows.push({ el, x: 0, speed, totalW });
   }
-  vY=0;
+
+  vY = 0;
 }
 
-// ── ANIMATION LOOP ────────────────────────────────────────────
 let animating = true;
+
 function animate() {
-  if(!animating) return;
-  vY+=V_SPEED;
-  if(vY>=totalVH) vY-=totalVH;
-  vbelt.style.transform=`translateY(${-vY}px)`;
-  rows.forEach(row=>{
-    row.x+=row.speed;
-    const half=row.totalW/2;
-    if(row.speed>0&&row.x>=half) row.x-=half;
-    if(row.speed<0&&row.x<=-half) row.x+=half;
-    row.el.style.transform=`translateX(${-row.x}px)`;
+  if (!animating) return;
+
+  vY += V_SPEED;
+  if (vY >= totalVH) vY -= totalVH;
+  vbelt.style.transform = `translateY(${-vY}px)`;
+
+  rows.forEach(row => {
+    row.x += row.speed;
+    const half = row.totalW / 2;
+    if (row.speed > 0 && row.x >= half) row.x -= half;
+    if (row.speed < 0 && row.x <= -half) row.x += half;
+    row.el.style.transform = `translateX(${-row.x}px)`;
   });
+
   requestAnimationFrame(animate);
 }
 
-init(); animate();
-window.addEventListener('resize',()=>{ clearTimeout(window._rt); window._rt=setTimeout(init,180); });
+init();
+animate();
 
-// ── PART THE TILES (castle reveal) ───────────────────────────
-const stage     = document.getElementById('mosaicStage');
+window.addEventListener('resize', () => {
+  clearTimeout(window._rt);
+  window._rt = setTimeout(() => {
+    init();
+    if (animating) requestAnimationFrame(animate);
+  }, 180);
+});
+
+const stage = document.getElementById('mosaicStage');
 const castleImg = document.getElementById('castleImg');
-const tagline   = document.getElementById('castleTagline');
+const tagline = document.getElementById('castleTagline');
 const enterWrap = document.getElementById('castleEnter');
-const enterBtn  = document.getElementById('enterBtn');
-const sitMain   = document.getElementById('sitMain');
+const enterBtn = document.getElementById('enterBtn');
+const sitMain = document.getElementById('sitMain');
+const castleLayer = document.getElementById('castleLayer');
+const resetHome = document.getElementById('resetHome');
 
 let parted = false;
 
 function partTheMosaic() {
-  if(parted) return;
+  if (parted) return;
   parted = true;
-  animating = false; // stop the scroll animation
+  animating = false;
 
-  // Get all tiles
   const allTiles = document.querySelectorAll('.tile');
-  const cx = window.innerWidth/2;
-  const cy = window.innerHeight/2;
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
 
   allTiles.forEach(tile => {
-    const rect  = tile.getBoundingClientRect();
-    const tx    = rect.left+rect.width/2;
-    const ty    = rect.top+rect.height/2;
+    const rect = tile.getBoundingClientRect();
+    const tx = rect.left + rect.width / 2;
+    const ty = rect.top + rect.height / 2;
 
-    // Direction: away from centre, distance-weighted
-    const dx = tx-cx;
-    const dy = ty-cy;
-    const dist = Math.sqrt(dx*dx+dy*dy)||1;
-    const power = 900 + dist*1.5;
-    const nx = (dx/dist)*power;
-    const ny = (dy/dist)*power;
-    const delay = (dist/Math.max(window.innerWidth,window.innerHeight))*0.4;
+    const dx = tx - cx;
+    const dy = ty - cy;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const power = 900 + dist * 1.5;
+    const nx = (dx / dist) * power;
+    const ny = (dy / dist) * power;
+    const delay = (dist / Math.max(window.innerWidth, window.innerHeight)) * 0.4;
 
-    tile.style.transition = `transform ${0.9+Math.random()*0.4}s cubic-bezier(0.16,1,0.3,1) ${delay}s, opacity 0.6s ease ${delay+0.2}s`;
-    tile.style.transform  = `translate(${nx}px,${ny}px) rotate(${(Math.random()-0.5)*45}deg) scale(0.4)`;
-    tile.style.opacity    = '0';
+    tile.style.transition = `transform ${0.9 + Math.random() * 0.4}s cubic-bezier(0.16,1,0.3,1) ${delay}s, opacity 0.6s ease ${delay + 0.2}s`;
+    tile.style.transform = `translate(${nx}px,${ny}px) rotate(${(Math.random() - 0.5) * 45}deg) scale(0.4)`;
+    tile.style.opacity = '0';
   });
 
-  // Show castle after tiles start flying
-  setTimeout(()=>{
+  setTimeout(() => {
     castleImg.classList.add('visible');
     tagline.classList.add('visible');
     enterWrap.classList.add('visible');
-    stage.style.pointerEvents='none';
+    stage.style.pointerEvents = 'none';
   }, 400);
 }
 
-// ── ENTER SITE ───────────────────────────────────────────────
-enterBtn.addEventListener('click', e => {
-  e.preventDefault();
-  const castleLayer = document.getElementById('castleLayer');
-  castleLayer.style.transition = 'opacity 0.6s ease';
-  castleLayer.style.opacity = '0';
-  setTimeout(()=>{
-    castleLayer.style.display='none';
-    stage.style.display='none';
-    document.body.style.overflow='auto';
-    sitMain.classList.add('unlocked');
-    window.scrollTo(0,0);
-  },650);
-});
-
-// ── TRIGGER: click anywhere on mosaic to part it ─────────────
-stage.addEventListener('click', partTheMosaic);
-stage.addEventListener('click', partTheMosaic);
-
 function resetToIntro() {
-  const castleLayer = document.getElementById('castleLayer');
-
   window.scrollTo(0, 0);
 
-  // show intro layers again
   castleLayer.style.display = 'flex';
   castleLayer.style.opacity = '1';
+  castleLayer.style.transition = '';
+
   stage.style.display = 'block';
   stage.classList.add('active');
   stage.style.pointerEvents = 'all';
 
-  // hide castle reveal state
   castleImg.classList.remove('visible');
   tagline.classList.remove('visible');
   enterWrap.classList.remove('visible');
 
-  // hide unlocked site
   sitMain.classList.remove('unlocked');
 
-  // reset flags
+  document.body.style.overflow = 'hidden';
+
   parted = false;
   animating = true;
 
-  // rebuild mosaic
   init();
-
-  // restart animation
   requestAnimationFrame(animate);
 }
 
-document.getElementById('resetHome').addEventListener('click', (e) => {
+enterBtn.addEventListener('click', e => {
+  e.preventDefault();
+  castleLayer.style.transition = 'opacity 0.6s ease';
+  castleLayer.style.opacity = '0';
+
+  setTimeout(() => {
+    castleLayer.style.display = 'none';
+    stage.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    sitMain.classList.add('unlocked');
+    window.scrollTo(0, 0);
+  }, 650);
+});
+
+stage.addEventListener('click', partTheMosaic);
+
+resetHome.addEventListener('click', e => {
   e.preventDefault();
 
   if (sitMain.classList.contains('unlocked') || parted) {
@@ -740,38 +864,7 @@ document.getElementById('resetHome').addEventListener('click', (e) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
+</script>
 
-<!--
-╔══════════════════════════════════════════════════════════════╗
-║  CUSTOMISATION GUIDE                                         ║
-╠══════════════════════════════════════════════════════════════╣
-║                                                              ║
-║  CASTLE IMAGE                                                ║
-║  Replace src="Mu_loss.png" with your image path.             ║
-║  The file must be in the same folder as this HTML.           ║
-║                                                              ║
-║  WORD IN TILES                                               ║
-║  Change const WORD = [...] to spell any word/phrase.         ║
-║                                                              ║
-║  COLOURS                                                     ║
-║  Edit --pink, --orange, --black in :root.                    ║
-║  Edit PALETTES array for tile colours.                       ║
-║                                                              ║
-║  SPEEDS                                                      ║
-║  V_SPEED = vertical drift (default 0.22)                     ║
-║  ROW_SPEEDS = per-row horizontal speeds                      ║
-║                                                              ║
-║  AUTO-REVEAL                                                 ║
-║  Uncomment the setTimeout line near the bottom to            ║
-║  automatically part the tiles after 3.5 seconds.            ║
-║                                                              ║
-║  ENTER BUTTON TEXT                                           ║
-║  Change "Sisene" to any word.                                ║
-║                                                              ║
-║  FONT                                                        ║
-║  All text uses Helvetica Neue / Helvetica / Arial stack.     ║
-║  No external font imports needed.                            ║
-╚══════════════════════════════════════════════════════════════╝
--->
 </body>
 </html>
