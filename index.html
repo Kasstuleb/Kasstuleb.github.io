@@ -698,19 +698,11 @@ enterBtn.addEventListener('click', e => {
 
 // ── TRIGGER: click anywhere on mosaic to part it ─────────────
 stage.addEventListener('click', partTheMosaic);
+stage.addEventListener('click', partTheMosaic);
+
 function resetToIntro() {
   const castleLayer = document.getElementById('castleLayer');
-  const allTiles = document.querySelectorAll('.tile');
-document.getElementById('resetHome').addEventListener('click', (e) => {
-  e.preventDefault();
 
-  if (sitMain.classList.contains('unlocked') || parted) {
-    resetToIntro();
-  } else {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-});
-  // stop page jump
   window.scrollTo(0, 0);
 
   // show intro layers again
@@ -732,17 +724,22 @@ document.getElementById('resetHome').addEventListener('click', (e) => {
   parted = false;
   animating = true;
 
-  // rebuild the mosaic completely
+  // rebuild mosaic
   init();
 
-  // restart animation loop
+  // restart animation
   requestAnimationFrame(animate);
 }
-// ── Also trigger after a short idle (optional — remove if you
-//    want click-only). Uncomment the line below to auto-reveal:
-// setTimeout(partTheMosaic, 3500);
 
-</script>
+document.getElementById('resetHome').addEventListener('click', (e) => {
+  e.preventDefault();
+
+  if (sitMain.classList.contains('unlocked') || parted) {
+    resetToIntro();
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
 
 <!--
 ╔══════════════════════════════════════════════════════════════╗
