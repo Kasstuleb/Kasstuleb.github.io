@@ -8,11 +8,12 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --pink: #ff79b0;
+      --pink: #ff7bc0;
       --pink-deep: #e0437a;
       --orange: #ff5c00;
-      --black: #0d0008;
+      --black: #000000;
       --white: #fff8f5;
+      --window-hover: #ffd76e;
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -20,7 +21,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: var(--pink);
+      background: var(--black);
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       cursor: none;
     }
@@ -29,41 +30,44 @@
       position: fixed;
       width: 10px;
       height: 10px;
-      background: var(--black);
+      background: var(--white);
       border-radius: 50%;
       pointer-events: none;
       z-index: 9999;
       transform: translate(-50%, -50%);
       transition: width 0.3s var(--ease), height 0.3s var(--ease), background 0.3s;
-      mix-blend-mode: multiply;
+      mix-blend-mode: difference;
     }
 
     .cursor-ring {
       position: fixed;
       width: 36px;
       height: 36px;
-      border: 1.5px solid var(--black);
+      border: 1.5px solid rgba(255,255,255,.8);
       border-radius: 50%;
       pointer-events: none;
       z-index: 9998;
       transform: translate(-50%, -50%);
       transition: all 0.12s var(--ease);
       opacity: 0.45;
+      mix-blend-mode: difference;
     }
 
     body:has(a:hover) .cursor,
-    body:has(button:hover) .cursor {
+    body:has(button:hover) .cursor,
+    body:has(.castle-window:hover) .cursor {
       width: 22px;
       height: 22px;
-      background: var(--orange);
+      background: var(--window-hover);
     }
 
     body:has(a:hover) .cursor-ring,
-    body:has(button:hover) .cursor-ring {
+    body:has(button:hover) .cursor-ring,
+    body:has(.castle-window:hover) .cursor-ring {
       width: 56px;
       height: 56px;
       opacity: 0.18;
-      border-color: var(--orange);
+      border-color: var(--window-hover);
     }
 
     nav {
@@ -84,10 +88,11 @@
       font-size: 1.1rem;
       letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: var(--black);
+      color: var(--white);
       text-decoration: none;
       position: relative;
       z-index: 1;
+      mix-blend-mode: difference;
     }
 
     .nav-links {
@@ -101,11 +106,12 @@
       font-weight: 600;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--black);
+      color: var(--white);
       text-decoration: none;
       opacity: 0.65;
       transition: opacity 0.2s;
       position: relative;
+      mix-blend-mode: difference;
     }
 
     .nav-links a::after {
@@ -115,7 +121,7 @@
       left: 0;
       right: 0;
       height: 1px;
-      background: var(--black);
+      background: currentColor;
       transform: scaleX(0);
       transition: transform 0.25s var(--ease);
     }
@@ -221,10 +227,7 @@
       gap: calc(var(--ts) * 0.055);
     }
 
-    .s-grid span {
-      background: var(--black);
-      border-radius: 2px;
-    }
+    .s-grid span { background: var(--black); border-radius: 2px; }
 
     .s-bars {
       width: calc(var(--ts) * 0.58);
@@ -234,10 +237,7 @@
       gap: calc(var(--ts) * 0.08);
     }
 
-    .s-bars span {
-      flex: 1;
-      background: var(--black);
-    }
+    .s-bars span { flex: 1; background: var(--black); }
 
     .s-bookmark {
       width: calc(var(--ts) * 0.44);
@@ -271,8 +271,15 @@
       pointer-events: none;
     }
 
-    .castle-img {
+    .castle-wrap {
+      position: relative;
       width: min(70vw, 700px);
+      pointer-events: none;
+    }
+
+    .castle-img {
+      width: 100%;
+      display: block;
       opacity: 0;
       transform: scale(0.85) translateY(40px);
       transition: opacity 1s ease 0.3s, transform 1.2s var(--ease) 0.3s;
@@ -285,16 +292,92 @@
       transform: scale(1) translateY(0);
     }
 
+    .castle-window {
+      position: absolute;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 1s ease 0.3s, background-color 0.18s ease;
+      pointer-events: auto;
+      background: var(--pink);
+      cursor: none;
+    }
+
+    .castle-img.visible ~ .castle-window,
+    .castle-wrap.revealed .castle-window {
+      opacity: 1;
+    }
+
+    .castle-window:hover {
+      background: var(--window-hover);
+    }
+
+    .window-mask {
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+    }
+
+    .window-left-arch {
+      left: 19.7%;
+      top: 59.4%;
+      width: 7.67%;
+      height: 13.4%;
+      -webkit-mask-image: url('Asset 4@4x.png');
+      mask-image: url('Asset 4@4x.png');
+    }
+
+    .window-right-arch {
+      left: 72.55%;
+      top: 59.4%;
+      width: 7.72%;
+      height: 13.4%;
+      -webkit-mask-image: url('Asset 5@4x.png');
+      mask-image: url('Asset 5@4x.png');
+    }
+
+    .window-top-arch {
+      left: 45.1%;
+      top: 40.0%;
+      width: 9.57%;
+      height: 15.9%;
+      -webkit-mask-image: url('Asset 6@4x.png');
+      mask-image: url('Asset 6@4x.png');
+    }
+
+    .window-door {
+      left: 45.2%;
+      top: 76.6%;
+      width: 9.7%;
+      height: 23.4%;
+      -webkit-mask-image: url('Asset 7@4x.png');
+      mask-image: url('Asset 7@4x.png');
+    }
+
+    .window-square {
+      width: 6.7%;
+      height: 7.7%;
+      background: var(--pink);
+    }
+
+    .window-square.left-outer { left: 11.1%; top: 79.3%; }
+    .window-square.left-inner { left: 27.7%; top: 79.3%; }
+    .window-square.right-inner { left: 65.6%; top: 79.3%; }
+    .window-square.right-outer { left: 82.3%; top: 79.3%; }
+
     .castle-tagline {
       margin-top: 2rem;
       font-size: clamp(0.75rem, 1.5vw, 1rem);
       font-weight: 600;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: var(--black);
+      color: var(--white);
       opacity: 0;
       transform: translateY(16px);
       transition: opacity 0.8s ease 0.9s, transform 0.8s var(--ease) 0.9s;
+      mix-blend-mode: difference;
     }
 
     .castle-tagline.visible {
@@ -322,8 +405,8 @@
       display: inline-flex;
       align-items: center;
       gap: 1rem;
-      background: var(--black);
-      color: var(--pink);
+      background: var(--white);
+      color: var(--black);
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-weight: 800;
       font-size: 0.85rem;
@@ -342,7 +425,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: var(--orange);
+      background: var(--window-hover);
       transform: translateX(-101%);
       transition: transform 0.4s var(--ease);
     }
@@ -366,7 +449,7 @@
       position: relative;
       z-index: 1;
       min-height: 100vh;
-      background: var(--pink);
+      background: var(--black);
       overflow-y: auto;
       opacity: 0;
       pointer-events: none;
@@ -392,7 +475,7 @@
       font-size: clamp(3rem, 10vw, 9rem);
       font-weight: 900;
       letter-spacing: -0.02em;
-      color: var(--black);
+      color: var(--white);
       line-height: 0.9;
       margin-bottom: 2rem;
     }
@@ -401,7 +484,7 @@
       max-width: 520px;
       font-size: 1rem;
       line-height: 1.7;
-      color: rgba(13,0,8,0.55);
+      color: rgba(255,255,255,0.58);
       margin-bottom: 3rem;
     }
 
@@ -415,14 +498,14 @@
       font-size: clamp(2rem,5vw,4rem);
       font-weight: 900;
       letter-spacing: -0.02em;
-      color: var(--black);
+      color: var(--white);
       margin-bottom: 1.5rem;
     }
 
     .page-section p {
       font-size: 1rem;
       line-height: 1.75;
-      color: rgba(13,0,8,0.6);
+      color: rgba(255,255,255,0.62);
       max-width: 600px;
     }
 
@@ -445,21 +528,21 @@
       justify-content: flex-end;
     }
 
-    .col-card:nth-child(even) { background: var(--black); }
+    .col-card:nth-child(even) { background: var(--pink); }
 
     .col-card h3 {
       font-size: 1.2rem;
       font-weight: 800;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      color: var(--pink);
+      color: var(--black);
       margin-bottom: 0.5rem;
     }
 
     .col-card p {
       font-size: 0.8rem;
       line-height: 1.6;
-      color: rgba(255,121,176,0.6);
+      color: rgba(0,0,0,0.62);
     }
 
     .scroll-hint {
@@ -475,13 +558,13 @@
       font-size: 0.6rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--black);
+      color: var(--white);
     }
 
     .scroll-line {
       width: 1px;
       height: 36px;
-      background: linear-gradient(to bottom, var(--black), transparent);
+      background: linear-gradient(to bottom, var(--white), transparent);
       animation: pulse 2s ease-in-out infinite;
     }
 
@@ -496,6 +579,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-top: 1px solid rgba(255,255,255,.08);
     }
 
     footer .f-logo {
@@ -503,18 +587,19 @@
       font-size: 1rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: var(--pink);
+      color: var(--white);
     }
 
     footer p {
       font-size: 0.75rem;
-      color: rgba(255,121,176,0.35);
+      color: rgba(255,255,255,0.35);
       letter-spacing: 0.08em;
     }
 
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .three-col { grid-template-columns: 1fr; }
+      .castle-wrap { width: min(88vw, 700px); }
     }
   </style>
 </head>
@@ -534,7 +619,17 @@
 </nav>
 
 <div class="castle-layer" id="castleLayer">
-  <img class="castle-img" id="castleImg" src="mu-loss.png" alt="Kass Tuleb Castle" />
+  <div class="castle-wrap" id="castleWrap">
+    <img class="castle-img" id="castleImg" src="mu-loss.png" alt="Kass Tuleb Castle" />
+    <div class="castle-window window-mask window-left-arch"></div>
+    <div class="castle-window window-mask window-right-arch"></div>
+    <div class="castle-window window-mask window-top-arch"></div>
+    <div class="castle-window window-mask window-door"></div>
+    <div class="castle-window window-square left-outer"></div>
+    <div class="castle-window window-square left-inner"></div>
+    <div class="castle-window window-square right-inner"></div>
+    <div class="castle-window window-square right-outer"></div>
+  </div>
   <p class="castle-tagline" id="castleTagline">Lorem ipsum dolor sit amet</p>
   <div class="castle-enter" id="castleEnter">
     <a class="enter-btn" href="#site" id="enterBtn">
@@ -597,6 +692,9 @@
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursorRing');
 let mx = 0, my = 0, rx = 0, ry = 0;
+let animating = true;
+let parted = false;
+let touchStartY = null;
 
 document.addEventListener('mousemove', e => {
   mx = e.clientX;
@@ -645,6 +743,15 @@ function tileSize() {
 
 let TS, rows = [], vY = 0, rowHeight, totalVH;
 const vbelt = document.getElementById('vbelt');
+const stage = document.getElementById('mosaicStage');
+const castleImg = document.getElementById('castleImg');
+const tagline = document.getElementById('castleTagline');
+const enterWrap = document.getElementById('castleEnter');
+const enterBtn = document.getElementById('enterBtn');
+const sitMain = document.getElementById('sitMain');
+const castleLayer = document.getElementById('castleLayer');
+const castleWrap = document.getElementById('castleWrap');
+const resetHome = document.getElementById('resetHome');
 
 function makeShape(type) {
   if (type === 'grid') {
@@ -736,8 +843,6 @@ function init() {
   vY = 0;
 }
 
-let animating = true;
-
 function animate() {
   if (!animating) return;
 
@@ -755,28 +860,6 @@ function animate() {
 
   requestAnimationFrame(animate);
 }
-
-init();
-animate();
-
-window.addEventListener('resize', () => {
-  clearTimeout(window._rt);
-  window._rt = setTimeout(() => {
-    init();
-    if (animating) requestAnimationFrame(animate);
-  }, 180);
-});
-
-const stage = document.getElementById('mosaicStage');
-const castleImg = document.getElementById('castleImg');
-const tagline = document.getElementById('castleTagline');
-const enterWrap = document.getElementById('castleEnter');
-const enterBtn = document.getElementById('enterBtn');
-const sitMain = document.getElementById('sitMain');
-const castleLayer = document.getElementById('castleLayer');
-const resetHome = document.getElementById('resetHome');
-
-let parted = false;
 
 function partTheMosaic() {
   if (parted) return;
@@ -807,6 +890,7 @@ function partTheMosaic() {
 
   setTimeout(() => {
     castleImg.classList.add('visible');
+    castleWrap.classList.add('revealed');
     tagline.classList.add('visible');
     enterWrap.classList.add('visible');
     stage.style.pointerEvents = 'none';
@@ -825,6 +909,7 @@ function resetToIntro() {
   stage.style.pointerEvents = 'all';
 
   castleImg.classList.remove('visible');
+  castleWrap.classList.remove('revealed');
   tagline.classList.remove('visible');
   enterWrap.classList.remove('visible');
 
@@ -838,6 +923,28 @@ function resetToIntro() {
   init();
   requestAnimationFrame(animate);
 }
+
+function maybeTriggerFromScroll(delta) {
+  if (!parted && delta > 8) {
+    partTheMosaic();
+  }
+}
+
+window.addEventListener('wheel', (e) => {
+  maybeTriggerFromScroll(e.deltaY);
+}, { passive: true });
+
+window.addEventListener('touchstart', (e) => {
+  if (!e.touches.length) return;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+window.addEventListener('touchmove', (e) => {
+  if (touchStartY === null || !e.touches.length) return;
+  const currentY = e.touches[0].clientY;
+  const delta = touchStartY - currentY;
+  maybeTriggerFromScroll(delta);
+}, { passive: true });
 
 enterBtn.addEventListener('click', e => {
   e.preventDefault();
@@ -863,6 +970,17 @@ resetHome.addEventListener('click', e => {
   } else {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+});
+
+init();
+animate();
+
+window.addEventListener('resize', () => {
+  clearTimeout(window._rt);
+  window._rt = setTimeout(() => {
+    init();
+    if (animating) requestAnimationFrame(animate);
+  }, 180);
 });
 </script>
 
